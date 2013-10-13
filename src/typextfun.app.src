@@ -1,0 +1,11 @@
+{application, typextfun,
+ [
+  {description, "Erlang extended functions for types"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
