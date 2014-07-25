@@ -1,4 +1,4 @@
-{application, typextfun,
+{application, '_',
  [
   {description, "Erlang extended functions for types"},
   {vsn, "0.0.1"},
