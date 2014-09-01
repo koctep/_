@@ -1,4 +1,4 @@
--module(typextfun).
+-module('_').
 
 -export([to_hex/1]).
 -export([from_hex/1]).
