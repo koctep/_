@@ -12,6 +12,9 @@
 -export([trim/2]).
 -export([trim/3]).
 
+-export([join/2]).
+-export([apply/2]).
+
 to_hex(D) when is_binary(D) ->
 	<< <<(to16(X))/integer>> || <<X:4>> <= D >>.
 to16(B) when B >= 0, B =< 9 -> $0 + B;
@@ -67,3 +70,34 @@ reverse(Data) when is_binary(Data) ->
 	<<I:L/little-integer>>;
 reverse(Data) when is_list(Data) ->
 	lists:reverse(Data).
+
+join([Str | _] = Strings, Separator) when is_binary(Str)->
+  BinSeparator = case is_binary(Separator) of
+                   true -> Separator;
+                   false -> list_to_binary(Separator)
+                 end,
+  join_binary(Strings, BinSeparator, <<>>);
+join(Strings, Separator) ->
+  join_list(Strings, Separator, []).
+
+join_binary([Str | Strings], Sep, Res) ->
+  NewRes = case Res of
+             <<>> -> Str;
+             R -> <<R/binary, Sep/binary, Str/binary>>
+           end,
+  join_binary(Strings, Sep, NewRes);
+join_binary([], _Sep, Res) ->
+  Res.
+
+join_list([Str | Strings], Sep, Res) ->
+  join_list(Strings, Sep, [Str, Sep | Res]);
+join_list([], Sep, Res) when Res =/= [] ->
+  [Sep | Res1] = lists:reverse(Res),
+  lists:flatten(Res1);
+join_list([], _, []) ->
+  [].
+
+apply({Mod, Fun}, Args) ->
+  erlang:apply(Mod, Fun, Args);
+apply(Fun, Args) ->
+  erlang:apply(Fun, Args).
