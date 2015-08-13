@@ -15,6 +15,9 @@
 -export([join/2]).
 -export([apply/2]).
 
+-export([app_get_env/2]).
+-export([app_get_env/3]).
+
 to_hex(D) when is_binary(D) ->
 	<< <<(to16(X))/integer>> || <<X:4>> <= D >>.
 to16(B) when B >= 0, B =< 9 -> $0 + B;
@@ -101,3 +104,13 @@ apply({Mod, Fun}, Args) ->
   erlang:apply(Mod, Fun, Args);
 apply(Fun, Args) ->
   erlang:apply(Fun, Args).
+
+app_get_env(Key, Default) ->
+  {ok, App} = application:get_application(),
+  app_get_env(App, Key, Default).
+
+app_get_env(App, Key, Default) ->
+  case application:get_env(App, Key) of
+    undefined -> Default;
+    {ok, Val} -> Val
+  end.
